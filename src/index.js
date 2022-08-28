@@ -1,10 +1,19 @@
 require('dotenv').config()
 const TelegramBot = require('node-telegram-bot-api');
 const schedule = require('node-schedule');
+const fetch = require("node-fetch")
+
 
 const TOKEN = process.env.TOKEN || "";
+const JOKE_API = "https://v2.jokeapi.dev/joke/Programming?format=txt"
 
-const PATTERN = '00 12 * * 0-5';
+// Pattern used before recurrence rule
+// const PATTERN = '00 12 * * 0-5';
+const rule = new schedule.RecurrenceRule();
+rule.dayOfWeek = [0, new schedule.Range(1, 5)];
+rule.hour = 0;
+rule.minute = 50;
+rule.tz = "Asia/Bishkek"
 
 if (typeof localStorage === "undefined" || localStorage === null) {
     var LocalStorage = require('node-localstorage').LocalStorage;
@@ -31,14 +40,36 @@ const workers = [
     {name: "Stas Senior", username: "nialav"},
 ]
 
-let counter = +localStorage.getItem("counter");
+const getJoke = async  () => {
+    try{
+      const response = await fetch(JOKE_API)
+      return await response.text()
+    }catch (e) {
+      return ""
+    }
+}
+
+const getCurrentIndex = () => {
+ const currentIndex = +localStorage.getItem("counter")
+
+ if(currentIndex > workers.length - 1) {
+  return 0
+ }
+ return currentIndex;
+}
+
 
 const bot = new TelegramBot(TOKEN, {polling: true});
 
-const job = schedule.scheduleJob(PATTERN, function(){
-    console.log('Sended');
+const job = schedule.scheduleJob(rule, function(){
+  const joke = getJoke();
+  let counter = getCurrentIndex();
+
+  joke.then(text=> {
     bot.sendMessage(-401819133, `#duty @${workers[counter].username} ${workers[counter].name} сердечно поздравляю, ты дежурный =)`)
+    bot.sendMessage(-401819133, text )
+  })
 
     counter++;
-    localStorage.setItem('counter', counter);
+    localStorage.setItem('counter', String(counter));
 });
