@@ -11,8 +11,8 @@ const JOKE_API = "https://v2.jokeapi.dev/joke/Programming?format=txt"
 // const PATTERN = '00 12 * * 0-5';
 const rule = new schedule.RecurrenceRule();
 rule.dayOfWeek = [0, new schedule.Range(1, 5)];
-rule.hour = 0;
-rule.minute = 50;
+rule.hour = 12;
+rule.minute = 0;
 rule.tz = "Asia/Bishkek"
 
 if (typeof localStorage === "undefined" || localStorage === null) {
