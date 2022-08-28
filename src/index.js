@@ -61,6 +61,13 @@ const getCurrentIndex = () => {
 
 const bot = new TelegramBot(TOKEN, {polling: true});
 
+bot.on('message', (msg) => {
+  const chatId = msg.chat.id;
+
+  // send a message to the chat acknowledging receipt of their message
+  bot.sendMessage(chatId, 'I am working!');
+});
+
 const job = schedule.scheduleJob(rule, function(){
   const joke = getJoke();
   let counter = getCurrentIndex();
