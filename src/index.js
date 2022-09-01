@@ -63,9 +63,11 @@ const bot = new TelegramBot(TOKEN, {polling: true});
 
 bot.on('message', (msg) => {
   const chatId = msg.chat.id;
+  const {from} = msg
+  
 
   // send a message to the chat acknowledging receipt of their message
-  bot.sendMessage(chatId, 'I am working!');
+  bot.sendMessage(chatId, `{${from || ""} Dalbaeb blad!}`);
 });
 
 const job = schedule.scheduleJob(rule, function(){
