@@ -10,7 +10,7 @@ const JOKE_API = "https://v2.jokeapi.dev/joke/Programming?format=txt"
 // Pattern used before recurrence rule
 // const PATTERN = '00 12 * * 0-5';
 const rule = new schedule.RecurrenceRule();
-rule.dayOfWeek = [0, new schedule.Range(1, 5)];
+rule.dayOfWeek = new schedule.Range(1, 5);
 rule.hour = 12;
 rule.minute = 0;
 rule.tz = "Asia/Bishkek"
@@ -62,17 +62,9 @@ const getCurrentIndex = () => {
 const bot = new TelegramBot(TOKEN, {polling: true});
 
 // Matches /love
-bot.onText(/\/love/, function onLoveText(msg) {
-  const opts = {
-    reply_to_message_id: msg.message_id,
-    reply_markup: JSON.stringify({
-      keyboard: [
-        ['Yes, you are the bot of my life ❤'],
-        ['No, sorry there is another one...']
-      ]
-    })
-  };
-  bot.sendMessage(msg.chat.id, 'Do you love me?', opts);
+bot.on("message", function (msg) {
+
+  bot.sendMessage(msg.chat.id, "Hehe boy");
 });
 
 const job = schedule.scheduleJob(rule, function(){
